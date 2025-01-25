@@ -453,7 +453,7 @@ def main():
                     mut_wd = \
                         os.path.join(step_wd, mut_orig[MUT_DIR_PATH])
                     original_dir = mut_wd
-                    log.info("The mutation string as the direcoty will be converted to a hash")
+                    log.info("The mutation string as the directory will be converted to a hash")
                     log.info("The original mutation string is: %s", mut_orig[MUT_DIR_PATH])
 
                     mut_wd_hash = hashlib.sha256(mut_orig[MUT_DIR_PATH].encode())
