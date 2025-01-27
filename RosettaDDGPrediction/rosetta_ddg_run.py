@@ -467,7 +467,7 @@ def main():
                     # Create the new directory with the hash as the name
                     Path(mut_wd).mkdir(parents=True, exist_ok=True)
 
-                    with open(f"{mut_wd}/test_writing_mut_wd_to_file.json", 'w') as f:
+                    with open(f"{mut_wd}/mutation_string_hash.json", 'w') as f:
                         log.info("Writing original mutation string and hash to file")                        
                         json.dump(hash_dict, f, indent=4)
 
