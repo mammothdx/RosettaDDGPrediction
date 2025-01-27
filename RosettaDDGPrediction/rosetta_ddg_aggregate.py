@@ -422,23 +422,22 @@ def main():
         # Get the mutation directory path
         mut_path = os.path.join(step_run_dir_path, dir_name)
 
-        print(f"The mut_path is: {mut_path}\n")
-        print(f"The dir_name is: {dir_name}")
         original = mut_path
 
-        # Try changing mut_path
+        # Change the mut_path
         mut_path_hash = hashlib.sha256(dir_name.encode()) # should be the same as the original hash
         hex_dig = mut_path_hash.hexdigest()  # Use the hash as the filename
 
-        # Now use the hash as the mut_path
-        print(f"\nThis is the old mut_path: {mut_path}\n")
+        # Use the hash as the mut_path
+        log.info("The old mut_path: %s", mut_path)
 
         mut_path = os.path.join(step_run_dir_path, hex_dig)
-        print(f"This is the new mut_path: {mut_path}")
+        log.info("The new mut_path is: %s",mut_path)
         hashed = mut_path
 
         hash_dict = {original: hashed}
-        # The directory should already exist from the rosetta_ddg_run, so try writing to a file within it without creating it first
+        # The directory should already exist from the rosetta_ddg_run
+        
         with open(f"{mut_path}/test_writing_mut_wd_to_file_aggregate.json", 'w') as f:
             json.dump(hash_dict, f, indent=4)
 
