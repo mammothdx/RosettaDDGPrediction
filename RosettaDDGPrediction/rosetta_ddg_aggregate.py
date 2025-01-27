@@ -39,6 +39,11 @@ import sys
 # Third-party packages
 import dask
 from distributed import Client, LocalCluster
+
+
+import hashlib
+import json
+
 import pandas as pd
 # RosettaDDGProtocols
 from . import aggregation 
@@ -416,9 +421,6 @@ def main():
 
         # Get the mutation directory path
         mut_path = os.path.join(step_run_dir_path, dir_name)
-
-        import hashlib
-        import json
 
         print(f"The mut_path is: {mut_path}\n")
         print(f"The dir_name is: {dir_name}")
