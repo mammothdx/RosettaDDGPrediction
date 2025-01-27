@@ -413,9 +413,33 @@ def main():
     # For each mutation
     for i, (mut_name, dir_name, mut_label, pos_label) \
         in mutinfo.iterrows():
-        
+
         # Get the mutation directory path
         mut_path = os.path.join(step_run_dir_path, dir_name)
+
+        import hashlib
+        import json
+        from pathlib import Path
+
+        print(f"The mut_path is: {mut_path}\n")
+        print(f"The dir_name is: {dir_name}")
+        original = mut_path
+
+        # Try changing mut_path
+        mut_path_hash = hashlib.sha256(dir_name.encode()) # should be the same as the original hash
+        hex_dig = mut_path_hash.hexdigest()  # Use the hash as the filename
+
+        # Now use the hash as the mut_path
+        print(f"\nThis is the old mut_path: {mut_path}\n")
+
+        mut_path = os.path.join(step_run_dir_path, hex_dig)
+        print(f"This is the new mut_path: {mut_path}")
+        hashed = mut_path
+
+        hash_dict = {original: hashed}
+        # The directory should already exist from the rosetta_ddg_run, so try writing to a file within it without creating it first
+        with open(f"{mut_path}/test_writing_mut_wd_to_file_aggregate.json", 'w') as f:
+            json.dump(hash_dict, f, indent=4)
 
         # If the protocol is a cartddg protocol
         if family in ("cartddg", "cartddg2020"):
@@ -516,7 +540,8 @@ def main():
 
         # Try to generate the aggregated and all-structures dataframes
         try:
-            
+
+            mut_label = hashlib.sha256(mut_label.encode()).hexdigest()
             aggr_df, struct_df = \
                 client.submit(\
                     aggregation.generate_output_dataframes,
