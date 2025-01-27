@@ -419,7 +419,6 @@ def main():
 
         import hashlib
         import json
-        from pathlib import Path
 
         print(f"The mut_path is: {mut_path}\n")
         print(f"The dir_name is: {dir_name}")
