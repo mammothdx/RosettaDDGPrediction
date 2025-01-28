@@ -443,7 +443,7 @@ def main():
                 json.dump(hash_dict, f, indent=4)
             except Exception as e:
                 errstr = f"Could not write the dictionary to the file: {e}"
-                log.error(f"Could not write the dictionary to the file: {e}")
+                log.error(errstr)
                 sys.exit(errstr)
 
         # If the protocol is a cartddg protocol
