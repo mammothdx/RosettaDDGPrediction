@@ -40,7 +40,7 @@ import sys
 from distributed import Client, LocalCluster
 
 
-import hashlib
+from hashlib import sha256
 import json
 
 import pandas as pd
@@ -415,6 +415,8 @@ def main():
 
 
     # For each mutation
+    hash_func = sha256
+
     for i, (mut_name, dir_name, mut_label, pos_label) \
         in mutinfo.iterrows():
 
@@ -424,7 +426,7 @@ def main():
         original = mut_path
 
         # Change the mut_path
-        mut_path_hash = hashlib.sha256(dir_name.encode()) # should be the same as the hash from rosetta_ddg_run
+        mut_path_hash = hash_func(dir_name.encode()) # should be the same as the hash from rosetta_ddg_run
         hex_dig = mut_path_hash.hexdigest()  # Use the hash as the filename
 
         # Use the hash as the mut_path
@@ -544,7 +546,6 @@ def main():
 
         # Try to generate the aggregated and all-structures dataframes
         try:
-
             mut_label = hashlib.sha256(mut_label.encode()).hexdigest()
             aggr_df, struct_df = \
                 client.submit(\
