@@ -424,7 +424,7 @@ def main():
         original = mut_path
 
         # Change the mut_path
-        mut_path_hash = hashlib.sha256(dir_name.encode()) # should be the same as the original hash
+        mut_path_hash = hashlib.sha256(dir_name.encode()) # should be the same as the hash from rosetta_ddg_run
         hex_dig = mut_path_hash.hexdigest()  # Use the hash as the filename
 
         # Use the hash as the mut_path
@@ -435,8 +435,8 @@ def main():
         hashed = mut_path
 
         hash_dict = {original: hashed}
-        # The directory should already exist from the rosetta_ddg_run
-        
+    
+        # Write the dictionary to an output file, where the hashes should be the same when created by rosetta_ddg_run and rosetta_ddg_aggregate
         with open(f"{mut_path}/test_writing_mut_wd_to_file_aggregate.json", 'w') as f:
             try :
                 json.dump(hash_dict, f, indent=4)
