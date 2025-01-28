@@ -439,7 +439,12 @@ def main():
         # The directory should already exist from the rosetta_ddg_run
         
         with open(f"{mut_path}/test_writing_mut_wd_to_file_aggregate.json", 'w') as f:
-            json.dump(hash_dict, f, indent=4)
+            try :
+                json.dump(hash_dict, f, indent=4)
+            except Exception as e:
+                errstr = f"Could not write the dictionary to the file: {e}"
+                log.error(f"Could not write the dictionary to the file: {e}")
+                sys.exit(errstr)
 
         # If the protocol is a cartddg protocol
         if family in ("cartddg", "cartddg2020"):
