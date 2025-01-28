@@ -41,7 +41,6 @@ from distributed import Client, LocalCluster
 
 
 from hashlib import sha256
-import json
 
 import pandas as pd
 # RosettaDDGProtocols
