@@ -595,13 +595,14 @@ def main():
                 chain, wtr, numr, mutr = mut_name.split(COMP_SEP)
 
             # If something went wrong, report it
-            except Exception:
+            except Exception as e:
                 
                 errstr = \
                     f"Could not generate MutateX-compatible " \
                     f"outputs for the mutation {mut_name}. " \
                     f"Please note that the conversion does not " \
-                    f"work for multiple simultaneous mutations. "
+                    f"work for multiple simultaneous mutations. " \
+                    f"{e}"
                 log.error(errstr)
                 continue
             
