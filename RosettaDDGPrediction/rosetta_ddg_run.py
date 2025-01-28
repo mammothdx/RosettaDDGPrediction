@@ -453,8 +453,8 @@ def main():
                     log.info("The mutation string as the directory will be converted to a hash")
                     log.info("The original mutation string is: %s", mut_orig[MUT_DIR_PATH])
 
-                    mut_wd_hash = hashlib.sha256(mut_orig[MUT_DIR_PATH].encode())
-                    hex_dig = mut_wd_hash.hexdigest()  # Use the hash as the filename
+                    # Use the hash as the filename
+                    hex_dig = hashlib.sha256(mut_orig[MUT_DIR_PATH].encode()).hexdigest()  
                     log.info("The hex digested hash is: %s", hex_dig)
 
                     # Use the hash as the mut_wd
