@@ -417,13 +417,11 @@ def main():
     # For each mutation
     hash_func = sha256
 
-    for i, (mut_name, dir_name, mut_label, pos_label) \
+    for _, (mut_name, dir_name, mut_label, pos_label) \
         in mutinfo.iterrows():
 
         # Get the mutation directory path
         mut_path = os.path.join(step_run_dir_path, dir_name)
-
-        original = mut_path
 
         # Change the mut_path
         mut_path_hash = hash_func(dir_name.encode()) # should be the same as the hash from rosetta_ddg_run
