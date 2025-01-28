@@ -539,7 +539,7 @@ def main():
 
         # Try to generate the aggregated and all-structures dataframes
         try:
-            mut_label = hashlib.sha256(mut_label.encode()).hexdigest()
+            mut_label = hash_func(mut_label.encode()).hexdigest()
             aggr_df, struct_df = \
                 client.submit(\
                     aggregation.generate_output_dataframes,
