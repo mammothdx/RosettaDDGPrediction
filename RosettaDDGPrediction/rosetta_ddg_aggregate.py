@@ -37,7 +37,6 @@ import os
 import os.path
 import sys
 # Third-party packages
-import dask
 from distributed import Client, LocalCluster
 
 
@@ -595,7 +594,7 @@ def main():
                 chain, wtr, numr, mutr = mut_name.split(COMP_SEP)
 
             # If something went wrong, report it
-            except Exception as e:
+            except Exception:
                 
                 errstr = \
                     f"Could not generate MutateX-compatible " \

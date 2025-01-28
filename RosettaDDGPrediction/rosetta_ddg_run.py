@@ -38,13 +38,11 @@ import os.path
 from pathlib import Path
 import sys
 # Third-party packages
-import dask
 from distributed import (
     Client,
     fire_and_forget,
     LocalCluster
 )
-import yaml
 
 import hashlib
 import json
@@ -58,7 +56,6 @@ from .defaults import (
     MUT_DIR_PATH,
     ROSETTA_PROTOCOLS
 )
-from . import pythonsteps
 from . import util
 
 
