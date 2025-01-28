@@ -435,9 +435,7 @@ def main():
         mut_path = os.path.join(step_run_dir_path, hex_dig)
         log.info("The new mut_path is: %s",mut_path)
         hashed = mut_path
-
-        hash_dict = {original: hashed}
-    
+  
         # Check for the hashed directory create during the run process, where the hashes should be the same when created by rosetta_ddg_run and rosetta_ddg_aggregate
         try:
             os.path.isdir(hashed)
