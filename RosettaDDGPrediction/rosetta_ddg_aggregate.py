@@ -437,10 +437,8 @@ def main():
         hashed = mut_path
   
         # Check for the hashed directory create during the run process, where the hashes should be the same when created by rosetta_ddg_run and rosetta_ddg_aggregate
-        try:
-            os.path.isdir(hashed)
-        except Exception as e:
-            errstr = f"Could not find the hashed directory {hashed}: {e}"
+        if not os.path.isdir(hashed):
+            errstr = f"Could not find the hashed directory {hashed}"
             log.error(errstr)
             sys.exit(errstr)
 
