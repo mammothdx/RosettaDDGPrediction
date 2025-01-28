@@ -437,7 +437,7 @@ def main():
         hash_dict = {original: hashed}
     
         # Write the dictionary to an output file, where the hashes should be the same when created by rosetta_ddg_run and rosetta_ddg_aggregate
-        with open(f"{mut_path}/test_writing_mut_wd_to_file_aggregate.json", 'w') as f:
+        with open(f"{mut_path}/mutation_string_hash.json", 'w') as f:
             try :
                 json.dump(hash_dict, f, indent=4)
             except Exception as e:
