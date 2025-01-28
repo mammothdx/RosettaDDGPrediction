@@ -438,14 +438,13 @@ def main():
 
         hash_dict = {original: hashed}
     
-        # Write the dictionary to an output file, where the hashes should be the same when created by rosetta_ddg_run and rosetta_ddg_aggregate
-        with open(f"{mut_path}/mutation_string_hash.json", 'w') as f:
-            try :
-                json.dump(hash_dict, f, indent=4)
-            except Exception as e:
-                errstr = f"Could not write the dictionary to the file: {e}"
-                log.error(errstr)
-                sys.exit(errstr)
+        # Check for the hashed directory create during the run process, where the hashes should be the same when created by rosetta_ddg_run and rosetta_ddg_aggregate
+        try:
+            os.path.isdir(hashed)
+        except Exception as e:
+            errstr = f"Could not find the hashed directory {hashed}: {e}"
+            log.error(errstr)
+            sys.exit(errstr)
 
         # If the protocol is a cartddg protocol
         if family in ("cartddg", "cartddg2020"):
