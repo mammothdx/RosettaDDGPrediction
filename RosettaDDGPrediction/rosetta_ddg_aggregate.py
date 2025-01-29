@@ -40,7 +40,6 @@ import sys
 # Third-party packages
 from distributed import Client, LocalCluster
 
-
 from hashlib import sha256
 
 import pandas as pd
