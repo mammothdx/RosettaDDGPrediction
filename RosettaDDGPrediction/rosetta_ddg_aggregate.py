@@ -35,6 +35,7 @@ import collections
 import logging as log
 import os
 import os.path
+import re
 import sys
 # Third-party packages
 from distributed import Client, LocalCluster
@@ -546,7 +547,7 @@ def main():
                     dg_mut = dg_mut,
                     ddg = ddg,
                     mutation = mut_name,
-                    mut_label = mut_label,
+                    mut_label = re.sub(r':.', '_', mut_name).replace('.', '')[1:],
                     pos_label = pos_label,
                     rescale = rescale,
                     list_contributions = list_contributions,
