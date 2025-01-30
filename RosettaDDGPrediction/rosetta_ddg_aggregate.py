@@ -35,10 +35,13 @@ import collections
 import logging as log
 import os
 import os.path
+import re
 import sys
 # Third-party packages
-import dask
 from distributed import Client, LocalCluster
+
+from hashlib import sha256 as hash_func
+
 import pandas as pd
 # RosettaDDGProtocols
 from . import aggregation 
@@ -411,11 +414,28 @@ def main():
 
 
     # For each mutation
-    for i, (mut_name, dir_name, mut_label, pos_label) \
+    for _, (mut_name, dir_name, mut_label, pos_label) \
         in mutinfo.iterrows():
-        
+
         # Get the mutation directory path
         mut_path = os.path.join(step_run_dir_path, dir_name)
+
+        # Change the mut_path
+        mut_path_hash = hash_func(dir_name.encode()) # should be the same as the hash from rosetta_ddg_run
+        hex_dig = mut_path_hash.hexdigest()  # Use the hash as the filename
+
+        # Use the hash as the mut_path
+        log.info("The old mut_path: %s", mut_path)
+
+        mut_path = os.path.join(step_run_dir_path, hex_dig)
+        log.info("The new mut_path is: %s",mut_path)
+        hashed = mut_path
+  
+        # Check for the hashed directory create during the run process, where the hashes should be the same when created by rosetta_ddg_run and rosetta_ddg_aggregate
+        if not os.path.isdir(hashed):
+            errstr = f"Could not find the hashed directory {hashed}"
+            log.error(errstr)
+            sys.exit(errstr)
 
         # If the protocol is a cartddg protocol
         if family in ("cartddg", "cartddg2020"):
@@ -516,7 +536,7 @@ def main():
 
         # Try to generate the aggregated and all-structures dataframes
         try:
-            
+            mut_label = hash_func(mut_label.encode()).hexdigest()
             aggr_df, struct_df = \
                 client.submit(\
                     aggregation.generate_output_dataframes,
@@ -524,7 +544,7 @@ def main():
                     dg_mut = dg_mut,
                     ddg = ddg,
                     mutation = mut_name,
-                    mut_label = mut_label,
+                    mut_label = re.sub(r':.', '_', mut_name).replace('.', '')[1:],
                     pos_label = pos_label,
                     rescale = rescale,
                     list_contributions = list_contributions,
@@ -571,7 +591,8 @@ def main():
                     f"Could not generate MutateX-compatible " \
                     f"outputs for the mutation {mut_name}. " \
                     f"Please note that the conversion does not " \
-                    f"work for multiple simultaneous mutations. "
+                    f"work for multiple simultaneous mutations. " \
+                    f"{e}"
                 log.error(errstr)
                 continue
             
