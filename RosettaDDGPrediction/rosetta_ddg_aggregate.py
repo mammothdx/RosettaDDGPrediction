@@ -40,7 +40,7 @@ import sys
 # Third-party packages
 from distributed import Client, LocalCluster
 
-from hashlib import sha256
+from hashlib import sha256 as hash_func
 
 import pandas as pd
 # RosettaDDGProtocols
@@ -414,8 +414,6 @@ def main():
 
 
     # For each mutation
-    hash_func = sha256
-
     for _, (mut_name, dir_name, mut_label, pos_label) \
         in mutinfo.iterrows():
 

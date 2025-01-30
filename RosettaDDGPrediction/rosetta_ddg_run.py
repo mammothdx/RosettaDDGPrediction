@@ -44,7 +44,7 @@ from distributed import (
     LocalCluster
 )
 
-from hashlib import sha256
+from hashlib import sha256 as hash_func
 import json
 
 # RosettaDDGProtocols
@@ -444,8 +444,6 @@ def main():
                 log.info(logstr)
 
                 # For each mutation
-                hash_func = sha256
-
                 for mut, mut_orig in zip(mutations, mutations_original):
 
                     # Set the path to the mutation directory
