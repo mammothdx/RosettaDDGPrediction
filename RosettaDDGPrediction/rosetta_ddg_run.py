@@ -450,15 +450,20 @@ def main():
                     mut_wd = \
                         os.path.join(step_wd, mut_orig[MUT_DIR_PATH])
                     original_dir = mut_wd
+                    mut_dir_path_parent_string = str(Path(mut_orig[MUT_DIR_PATH]).parent)
+                    mut_dir_path_child_string = str(Path(mut_orig[MUT_DIR_PATH]).name)
                     log.info("The mutation string as the directory will be converted to a hash")
-                    log.info("The original mutation string is: %s", mut_orig[MUT_DIR_PATH])
+                    log.info("The original mutation string is: %s", mut_dir_path_parent_string)
 
                     # Use the hash as the filename
-                    hex_dig = hash_func(mut_orig[MUT_DIR_PATH].encode()).hexdigest()  
+                    hex_dig = hash_func(mut_dir_path_parent_string.encode()).hexdigest()
                     log.info("The hex digested hash is: %s", hex_dig)
 
                     # Use the hash as the mut_wd
-                    mut_wd = os.path.join(step_wd, hex_dig)
+                    if step_name in ("cartesian", "cartesian2020"):
+                        mut_wd = os.path.join(step_wd, hex_dig)
+                    elif step_name == "flexddg":
+                        mut_wd = os.path.join(step_wd, hex_dig, mut_dir_path_child_string)
                     hash_dict = {original_dir: mut_wd}
 
                     # Create the new directory with the hash as the name
