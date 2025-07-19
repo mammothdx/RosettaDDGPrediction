@@ -445,67 +445,51 @@ def main():
 
                 # For each mutation
                 for mut, mut_orig in zip(mutations, mutations_original):
-
-                    # Set the path to the mutation directory
-                    mut_wd = \
-                        os.path.join(step_wd, mut_orig[MUT_DIR_PATH])
-                    original_dir = mut_wd
-                    mut_dir_path_parent_string = str(Path(mut_orig[MUT_DIR_PATH]).parent)
-                    mut_dir_path_child_string = str(Path(mut_orig[MUT_DIR_PATH]).name)
-                    log.info("The mutation string as the directory will be converted to a hash")
-                    log.info("The original mutation string is: %s", mut_dir_path_parent_string)
-
-                    # Use the hash as the filename
-                    hex_dig = hash_func(mut_dir_path_parent_string.encode()).hexdigest()
-                    log.info("The hex digested hash is: %s", hex_dig)
-
-                    # Use the hash as the mut_wd
+                    original_dir = os.path.join(step_wd, mut_orig[MUT_DIR_PATH])
+                    mut_wd = original_dir  # Default unless overridden
+                    hash_dict = {}
+                
                     if step_name in ("cartesian", "cartesian2020"):
+                        # Hash the full mutation path string
+                        mut_path_parent = mut_orig[MUT_DIR_PATH]
+                        hex_dig = hash_func(mut_path_parent.encode()).hexdigest()
                         mut_wd = os.path.join(step_wd, hex_dig)
+                
                     elif step_name == "flexddg":
-                        mut_wd = os.path.join(step_wd, hex_dig, mut_dir_path_child_string)
-                    hash_dict = {original_dir: mut_wd}
-
-                    # Create the new directory with the hash as the name
+                        # Hash the *parent* of the mutation path
+                        mut_path_parent = str(Path(mut_orig[MUT_DIR_PATH]).parent)
+                        mut_path_child = str(Path(mut_orig[MUT_DIR_PATH]).name)
+                        hex_dig = hash_func(mut_path_parent.encode()).hexdigest()
+                        mut_wd = os.path.join(step_wd, hex_dig, mut_path_child)
+                        hash_dict = {original_dir: mut_wd}
+                
+                    # Logging hash information
+                    log.info(f"[{step_name}] Converted mutation string to hash: {hex_dig}")
+                    log.info(f"Original mutation string: {mut_orig[MUT_DIR_PATH]}")
+                    log.info(f"Hashed mutation directory: {mut_wd}")
+                
+                    # Ensure directory exists and write hash mapping (only for flexddg)
                     Path(mut_wd).mkdir(parents=True, exist_ok=True)
-
-                    with open(f"{mut_wd}/mutation_string_hash.json", 'w') as f:
-                        log.info("Writing original mutation string and hash to file")                        
-                        json.dump(hash_dict, f, indent=4)
-
-                    # If the step is cartesian ΔΔG calculation
-                    if step_name in ("cartesian", "cartesian2020"):
-                        
-                        # Run the step
-                        process = \
-                            client.submit(\
-                                util.run_cartesian,
-                                step_features = step_features,
-                                exec_path = exec_path,
-                                exec_suffix = exec_suffix,
-                                mut = mut,
-                                mut_wd = mut_wd,
-                                step = step,
-                                step_opts = step_opts,
-                                curr_pdb_file = curr_pdb_file,
-                                settings = settings)
-
-                    # If the step is Flex ddG ΔΔG calculation
-                    elif step_name == "flexddg":
-
-                        # Run the step
-                        process = \
-                            client.submit(\
-                                util.run_flexddg,
-                                step_features = step_features,
-                                exec_path = exec_path,
-                                exec_suffix = exec_suffix,
-                                mut = mut,
-                                mut_wd = mut_wd,
-                                step = step,
-                                step_opts = step_opts,
-                                curr_pdb_file = curr_pdb_file,
-                                settings = settings)                   
+                    if step_name == "flexddg":
+                        json_path = os.path.join(mut_wd, "mutation_string_hash.json")
+                        with open(json_path, 'w') as f:
+                            log.info("Writing original mutation string and hash to file.")
+                            json.dump(hash_dict, f, indent=4)
+                
+                    # Run the appropriate ΔΔG calculation
+                    run_func = util.run_cartesian if step_name in ("cartesian", "cartesian2020") else util.run_flexddg
+                    process = client.submit(
+                        run_func,
+                        step_features=step_features,
+                        exec_path=exec_path,
+                        exec_suffix=exec_suffix,
+                        mut=mut,
+                        mut_wd=mut_wd,
+                        step=step,
+                        step_opts=step_opts,
+                        curr_pdb_file=curr_pdb_file,
+                        settings=settings
+                    )
 
                     # Append the process to the list of futures so that
                     # it gets gathered before the next step
